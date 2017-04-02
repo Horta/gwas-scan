@@ -1,0 +1,109 @@
+\documentclass[twocolumn,draft]{article}
+
+\usepackage{savetrees}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\usepackage[english]{babel}
+
+\RequirePackage[l2tabu, orthodox]{nag}
+\usepackage[all,warning]{onlyamsmath}
+
+\usepackage{hyperref}
+
+\usepackage{cuted}
+
+\usepackage[style=numeric-comp]{biblatex}
+\bibliography{notes}
+
+\title{Genome-wide Scan for Linear Mixed Models}
+\author{Danilo Horta}
+\date{\today}
+
+\include{definitions}
+
+\begin{document}
+	\maketitle
+
+\begin{align}
+  \bfy \sim \normal{\rmF\bfalpha + \rmG\bfbeta}{\rmK}
+\end{align}
+
+Let
+\begin{equation}
+  \til{\bfy} = \pinv{\rmK^{\haf}},~~ \rmL
+	  = \pinv{\rmK^{\haf}}\rmF \texto{and} \rmR = \pinv{\rmK^{\haf}}\rmG.
+\end{equation}
+
+We want to solve
+\begin{equation}
+  \paren{\trans{\rmX}\rmX}\hat\bfb = \trans{\rmX}\til{\bfy}
+\end{equation}
+for
+\begin{equation}
+  \rmX =
+    \begin{bmatrix}
+      \rmL & \rmR
+    \end{bmatrix}
+  \texto{and}
+  \hat\bfb =
+    \begin{bmatrix}
+      \hat\bfalpha \\
+      \hat\bfbeta
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+  \trans{\rmX}\rmX
+    = \begin{bmatrix}
+      \trans{\rmL}\rmL & \trans{\rmL}\rmR \\
+      \trans{\rmR}\rmL & \trans{\rmR}\rmR
+    \end{bmatrix}
+\end{equation}
+
+Eq. 3 from~\cite{rohde1965generalized} shows that
+
+\begin{strip}
+	\begin{equation}
+		\pinv{(\trans{\rmX}\rmX)} =
+		\begin{bmatrix}
+			\pinv{(\trans{\rmL}\rmL)} + \pinv{(\trans{\rmL}\rmL)} (\trans{\rmL}\rmR)
+				\pinv{\rmW} \trans{(\trans{\rmL}\rmR)} \pinv{(\trans{\rmL}\rmL)}
+				& - \pinv{(\trans{\rmL}\rmL)} (\trans{\rmL}\rmR)
+				\pinv{\rmW} \\
+			- \pinv{\rmW} \trans{(\trans{\rmL}\rmR)}
+			\pinv{(\trans{\rmL}\rmL)} & \pinv{\rmW}
+		\end{bmatrix}
+	\end{equation}
+\end{strip}
+
+where
+
+\begin{align}
+	\rmW &= \trans{\rmR}\rmR
+	- \trans{\rmR}\rmL\pinv{(\trans{\rmL}\rmL)}\trans{\rmL}\rmR \\
+	  &= \trans{\rmR}\rmR - \trans{\rmR}\rmL\pinv{\rmL}\rmR \\
+		&= \trans{\rmR}\rmR - \trans{\rmR}(\rmU\Sigma\pinv{\Sigma}\trans{\rmU})\rmR
+\end{align}
+
+Thus
+
+\begin{equation}
+	\pinv{(\trans{\rmX}\rmX)}\trans{\rmX} =
+		\begin{bmatrix}
+			\pinv{\rmL} + \pinv{\rmL}\rmR\pinv{\rmW}\trans{\rmR}\rmL\pinv{\rmL}
+			-\pinv{\rmL}\rmR\pinv{\rmW}\trans{\rmR}\\
+			-\pinv{\rmW}\trans{\rmR}\rmL\pinv{\rmL} + \pinv{\rmW}\trans{\rmR}
+		\end{bmatrix}
+\end{equation}
+
+\printbibliography\
+
+\end{document}
