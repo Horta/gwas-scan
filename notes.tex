@@ -23,7 +23,7 @@
 \usepackage[style=numeric-comp]{biblatex}
 \bibliography{notes}
 
-\title{Genome-wide Scan for Linear Mixed Models}
+\title{Genome-wide scan for linear mixed models}
 \author{Danilo Horta}
 \date{\today}
 
@@ -32,46 +32,49 @@
 \begin{document}
 	\maketitle
 
-\begin{align}
-  \bfy \sim \normal{\rmF\bfalpha + \rmG\bfbeta}{\rmK}
-\end{align}
+\section{Single block}
 
 Let
-\begin{equation}
-  \til{\bfy} = \pinv{\rmK^{\haf}},~~ \rmL
-	  = \pinv{\rmK^{\haf}}\rmF \texto{and} \rmR = \pinv{\rmK^{\haf}}\rmG.
-\end{equation}
+\begin{equation*}
+  \bfy \sim \normal{\rmF\bfalpha}{\rmK}
+\end{equation*}
+be the marginal likelihood of a LMM with a single covariate block $\rmF$.
+The maximum likelihood estimation of the fixed effects is
+\begin{equation*}
+	\hat\bfalpha = \pinv{(\trans{\rmF}\pinv{\rmK}\rmF)}
+	               \trans{\rmF}\pinv{\rmK}\bfy.
+\end{equation*}
+In practice, the method of least squares can be used to solve the above
+equation without explicitly finding pseudoinverses.
 
+\section{Double block}
+
+Let
+\begin{equation*}
+  \bfy \sim \normal{\rmF\bfalpha + \rmG\bfbeta}{\rmK}
+\end{equation*}
+be the marginal likelihood of a LMM with two covariate blocks $\rmF$ and
+$\rmG$.
 We want to solve
-\begin{equation}
-  \paren{\trans{\rmX}\rmX}\hat\bfb = \trans{\rmX}\til{\bfy}
-\end{equation}
+\begin{equation*}
+	\begin{bmatrix}
+		\hat\bfalpha \\
+		\hat\bfbeta
+	\end{bmatrix} = \pinv{(\trans{\rmX}\rmX)}\trans{\rmX}\pinv{\rmK^{\haf}}\bfy
+\end{equation*}
 for
-\begin{equation}
-  \rmX =
-    \begin{bmatrix}
-      \rmL & \rmR
-    \end{bmatrix}
-  \texto{and}
-  \hat\bfb =
-    \begin{bmatrix}
-      \hat\bfalpha \\
-      \hat\bfbeta
-    \end{bmatrix}
-\end{equation}
+\begin{equation*}
+\rmL = \pinv{\rmK^{\haf}}\rmF,~~ \rmR = \pinv{\rmK^{\haf}}\rmG\texto{and}
+	\rmX =
+		\begin{bmatrix}
+			\rmL & \rmR
+		\end{bmatrix}.
+\end{equation*}
 
-\begin{equation}
-  \trans{\rmX}\rmX
-    = \begin{bmatrix}
-      \trans{\rmL}\rmL & \trans{\rmL}\rmR \\
-      \trans{\rmR}\rmL & \trans{\rmR}\rmR
-    \end{bmatrix}
-\end{equation}
-
-Eq. 3 from~\cite{rohde1965generalized} shows that
+We have
 
 \begin{strip}
-	\begin{equation}
+	\begin{equation*}
 		\pinv{(\trans{\rmX}\rmX)} =
 		\begin{bmatrix}
 			\pinv{(\trans{\rmL}\rmL)} + \pinv{(\trans{\rmL}\rmL)} (\trans{\rmL}\rmR)
@@ -80,29 +83,51 @@ Eq. 3 from~\cite{rohde1965generalized} shows that
 				\pinv{\rmW} \\
 			- \pinv{\rmW} \trans{(\trans{\rmL}\rmR)}
 			\pinv{(\trans{\rmL}\rmL)} & \pinv{\rmW}
-		\end{bmatrix}
-	\end{equation}
+		\end{bmatrix},
+	\end{equation*}
 \end{strip}
+from Eq. 3 of~\cite{rohde1965generalized}, where
+$\rmW = \trans{\rmR}\rmR - \trans{\rmR}\rmL\pinv{(\trans{\rmL}\rmL)}
+\trans{\rmL}\rmR$.
 
-where
-
-\begin{align}
-	\rmW &= \trans{\rmR}\rmR
-	- \trans{\rmR}\rmL\pinv{(\trans{\rmL}\rmL)}\trans{\rmL}\rmR \\
-	  &= \trans{\rmR}\rmR - \trans{\rmR}\rmL\pinv{\rmL}\rmR \\
-		&= \trans{\rmR}\rmR - \trans{\rmR}(\rmU\Sigma\pinv{\Sigma}\trans{\rmU})\rmR
-\end{align}
-
-Thus
-
-\begin{equation}
+Defining $\rmA = \trans{\rmL}\rmL$ and $\rmB = \trans{\rmL}\rmR$ leads us to
+\begin{equation*}
 	\pinv{(\trans{\rmX}\rmX)}\trans{\rmX} =
 		\begin{bmatrix}
-			\pinv{\rmL} + \pinv{\rmL}\rmR\pinv{\rmW}\trans{\rmR}\rmL\pinv{\rmL}
-			-\pinv{\rmL}\rmR\pinv{\rmW}\trans{\rmR}\\
-			-\pinv{\rmW}\trans{\rmR}\rmL\pinv{\rmL} + \pinv{\rmW}\trans{\rmR}
-		\end{bmatrix}
-\end{equation}
+			\pinv{\rmA}\trans{\rmL}
+			+ \pinv{\rmA}\rmB\pinv{\rmW}\trans{\rmB}\pinv{\rmA}\trans{\rmL}
+			-\pinv{\rmA}\rmB\pinv{\rmW}\trans{\rmR}\\
+			-\pinv{\rmW}\trans{\rmB}\pinv{\rmA}\trans{\rmL}
+			+ \pinv{\rmW}\trans{\rmR}
+		\end{bmatrix}.
+\end{equation*}
+Finally,
+\begin{align*}
+	&\pinv{(\trans{\rmX}\rmX)}\trans{\rmX} \pinv{\rmK^{\haf}}\bfy = \\
+	&\begin{bmatrix}
+		\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy
+		+ \pinv{\rmA}\rmB\pinv{\rmW}\trans{\rmB}\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy
+		-\pinv{\rmA}\rmB\pinv{\rmW}\trans{\rmG}\pinv{\rmK}\bfy \\
+		\pinv{\rmW}\trans{\rmG}\pinv{\rmK}\bfy
+		-\pinv{\rmW}\trans{\rmB}\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy
+	\end{bmatrix}.
+\end{align*}
+A robust implementation of the above equation has to:
+(i) associate matrix multiplications in such a way that a sequence of
+$\pinv{\rmK}\cdots\pinv{\rmK}$ is avoided;
+and (ii) handle low-rank matrices $\rmW$.
+A better association of matrix multiplications is given by
+\begin{align*}
+	&\pinv{(\trans{\rmX}\rmX)}\trans{\rmX} \pinv{\rmK^{\haf}}\bfy = \\
+	&\begin{bmatrix}
+		\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy
+		+ \pinv{\rmA}\rmB\pinv{\rmW}(\trans{\rmB}\pinv{\rmA}\trans{\rmF}\pinv{\rmK}
+		\bfy-\trans{\rmG}\pinv{\rmK}\bfy) \\
+		\pinv{\rmW}(\trans{\rmG}\pinv{\rmK}\bfy
+		-\trans{\rmB}\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy)
+	\end{bmatrix}.
+\end{align*}
+$\pinv{\rmW}$ can be found via economic SVD decomposition.
 
 \printbibliography\
 
