@@ -114,7 +114,7 @@ Finally,
 \end{align*}
 A robust implementation of the above equation has to:
 (i) associate matrix multiplications in such a way that a sequence of
-$\pinv{\rmK}\cdots\pinv{\rmK}$ is avoided;
+$\pinv{\rmK}\dots\pinv{\rmK}$ is avoided;
 and (ii) handle low-rank matrices $\rmW$.
 A better association of matrix multiplications is given by
 \begin{align*}
@@ -128,6 +128,52 @@ A better association of matrix multiplications is given by
 	\end{bmatrix}.
 \end{align*}
 $\pinv{\rmW}$ can be found via economic SVD decomposition.
+
+\section{Batch scan}
+
+Given a $n\times p$ covariate block $\rmG$, we want to quickly infer the
+maximum likelihood estimations of $\bfalpha_i$ and $\beta_i$, for
+$i \in \{1, \dots, p\}$ denoting the $\rmG$ columns.
+We define a diagonal matrix
+\begin{equation*}
+	\rmW = \dotd{\trans{\rmG}}{\pinv{\rmK}\rmG} -
+	       \dotd{\trans{\rmG}}{\pinv{\rmK}\rmF
+				 \pinv{(\trans{\rmL}\rmL)}\trans{\rmF}\pinv{\rmK}\rmG},
+\end{equation*}
+where $\dotd{\cdot}{\cdot}$ is a function that returns the diagonal elements
+of a matrix multiplication with asymptotically lower computational cost and
+memory use.
+
+Clearly,
+\begin{equation*}
+	\hat\bfbeta =
+	\begin{bmatrix}
+		\hat\beta_1 \\
+		\hat\beta_2 \\
+		\vdots \\
+		\hat\beta_p
+	\end{bmatrix}
+	= \pinv{\rmW}(\trans{\rmG}\pinv{\rmK}\bfy
+	-\trans{\rmB}\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy).
+\end{equation*}
+We know that
+\begin{equation*}
+	\hat\bfalpha_i = \pinv{\rmA}\trans{\rmF}\pinv{\rmK}
+	(\bfy + (\rmG_i \rmW_i \trans{\rmG_i})
+	(\pinv{\rmK}\rmF\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy - \pinv{\rmK}\bfy)),
+\end{equation*}
+where $\rmG_i$ is the $i$-th column of $\rmG$.
+For one-shot computation we do
+\begin{equation*}
+	\hat\bfalpha = \pinv{\rmA}\trans{\rmF}\pinv{\rmK}
+	\paren{\bfy \oplus \rmG_i \otimes
+	\trans{\paren{(\rmW_i \trans{\rmG_i})
+	  (\pinv{\rmK}\rmF\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy
+		 - \pinv{\rmK}\bfy)}}},
+\end{equation*}
+where $\oplus$ and $\otimes$ are element-wise summation and multiplication
+with broadcasting.
+
 
 \printbibliography\
 
