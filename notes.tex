@@ -34,12 +34,14 @@
 
 \section{Least squares}
 
+We apply the method of least squares to estimate the fixed-effect sizes.
+
 \subsection{Single block}
 
 Let
-\begin{equation*}
+\begin{equation}\label{eq:lmm}
   \bfy \sim \normal{\rmF\bfalpha}{\rmK}
-\end{equation*}
+\end{equation}
 be the marginal likelihood of a LMM with a single covariate block $\rmF$.
 The maximum likelihood estimation of the fixed effects is
 \begin{equation*}
@@ -178,12 +180,13 @@ with broadcasting.
 
 \section{Marginal likelihood}
 
+Replace $\rmK$ by $\sigma^2\rmK$ in Eq.~\eqref{eq:lmm}.
 Log of the marginal likelihood is given by
 \begin{equation*}
-	-\haf\paren{\log(2\pi) - \log\det|\rmK|
-	- \trans{(\bfy - \rmF\bfbeta)} \pinv{\rmK} (\bfy - \rmF\bfbeta)}.
+	-\haf\paren{\log(2\pi) - \log\det|\sigma^2\rmK|
+	- \trans{(\bfy - \rmF\bfbeta)} \pinv{(\sigma^2\rmK)} (\bfy - \rmF\bfbeta)}.
 \end{equation*}
-Let $\til{\rmK} = \sigma^2\rmK$.
+
 The maximum likelihood estimation and the restricted likelihood estimation of
 $\sigma^2$ are give by
 \begin{equation*}
