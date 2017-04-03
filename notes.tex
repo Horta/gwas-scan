@@ -32,7 +32,9 @@
 \begin{document}
 	\maketitle
 
-\section{Single block}
+\section{Least squares}
+
+\subsection{Single block}
 
 Let
 \begin{equation*}
@@ -47,7 +49,7 @@ The maximum likelihood estimation of the fixed effects is
 In practice, the method of least squares can be used to solve the above
 equation without explicitly finding pseudoinverses.
 
-\section{Double block}
+\subsection{Double block}
 
 Let
 \begin{equation*}
@@ -129,7 +131,7 @@ A better association of matrix multiplications is given by
 \end{align*}
 $\pinv{\rmW}$ can be found via economic SVD decomposition.
 
-\section{Batch scan}
+\subsection{Batch scan}
 
 Given a $n\times p$ covariate block $\rmG$, we want to quickly infer the
 maximum likelihood estimations of $\bfalpha_i$ and $\beta_i$, for
@@ -174,6 +176,24 @@ For one-shot computation we do
 where $\oplus$ and $\otimes$ are element-wise summation and multiplication
 with broadcasting.
 
+\section{Marginal likelihood}
+
+Log of the marginal likelihood is given by
+\begin{equation*}
+	-\haf\paren{\log(2\pi) - \log\det|\rmK|
+	- \trans{(\bfy - \rmF\bfbeta)} \pinv{\rmK} (\bfy - \rmF\bfbeta)}.
+\end{equation*}
+Let $\til{\rmK} = \sigma^2\rmK$.
+The maximum likelihood estimation and the restricted likelihood estimation of
+$\sigma^2$ are give by
+\begin{equation*}
+	\hat\sigma^2 = \frac{
+		\trans{(\bfy - \rmF\hat\bfbeta)}
+			\pinv{\rmK}
+		(\bfy - \rmF\hat\bfbeta)
+	}{k}
+\end{equation*}
+for $k = n$ and $k = n - p$, respectively.
 
 \printbibliography\
 
