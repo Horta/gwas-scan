@@ -182,11 +182,12 @@ with broadcasting.
 
 Replace $\rmK$ by $\sigma^2\rmK$ in Eq.~\eqref{eq:lmm}.
 Log of the marginal likelihood is given by
-\begin{equation*}
-	-\haf\paren{\log(2\pi) - \log\det|\sigma^2\rmK|
-	- \trans{(\bfy - \rmF\bfbeta)} \pinv{(\sigma^2\rmK)} (\bfy - \rmF\bfbeta)}.
-\end{equation*}
-
+\begin{align*}
+  \calL(\bfbeta, \sigma^2) &=
+	-\haf\big(\log(2\pi) - \log\det|\sigma^2\rmK| \\
+	&- \trans{(\bfy - \rmF\bfbeta)} \pinv{(\sigma^2\rmK)} (\bfy - \rmF\bfbeta)
+	\big).
+\end{align*}
 The maximum likelihood estimation and the restricted likelihood estimation of
 $\sigma^2$ are give by
 \begin{equation*}
@@ -197,6 +198,26 @@ $\sigma^2$ are give by
 	}{k}
 \end{equation*}
 for $k = n$ and $k = n - p$, respectively.
+
+\section{Likelihood ratio test}
+
+Suppose that the null hyphotesis is given by
+$\nullH: \bfbeta \in \Theta_0$ and the alternative one is given by
+$\altH: \bfbeta \in \Theta_1$, where $\Theta_0$ is a subspace of $\Theta_1$,
+and let $d$ be the difference between the $\Theta_1$ and $\Theta_0 $
+dimensions.
+It follows from classical likelihood theory that
+\begin{equation*}
+	\til{\chi}^2_d \sim -2\ln
+	\Bigg(
+		\frac{\calL(\hat\bfbeta_0, \hat\sigma_0^2)}
+		     {\calL(\hat\bfbeta_1, \hat\sigma_1^2)}
+	\Bigg),
+\end{equation*}
+asymptotically, for maximum likelihood parameter estimation\footnote{This is
+not true for rescricted maximum likelihood estimation.}
+subject to $\hat\bfbeta_0 \in \Theta_0$ and $\hat\bfbeta_1 \in \Theta_1$
+\cite{verbeke2009linear}.
 
 \printbibliography\
 
