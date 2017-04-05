@@ -24,7 +24,7 @@
 \bibliography{notes}
 
 \title{Genome-wide scan for linear mixed models}
-\author{Danilo Horta}
+\author{Danilo Horta and Francesco P. Casale}
 \date{\today}
 
 \include{definitions}
@@ -170,8 +170,8 @@ where $\rmG_i$ is the $i$-th column of $\rmG$.
 For one-shot computation we do
 \begin{equation*}
 	\hat\bfalpha = \pinv{\rmA}\trans{\rmF}\pinv{\rmK}
-	\paren{\bfy \oplus \rmG_i \otimes
-	\trans{\paren{(\rmW_i \trans{\rmG_i})
+	\paren{\bfy \oplus \rmG \otimes
+	\trans{\paren{(\rmW \trans{\rmG})
 	  (\pinv{\rmK}\rmF\pinv{\rmA}\trans{\rmF}\pinv{\rmK}\bfy
 		 - \pinv{\rmK}\bfy)}}},
 \end{equation*}
@@ -206,7 +206,8 @@ $\nullH: \bfbeta \in \Theta_0$ and the alternative one is given by
 $\altH: \bfbeta \in \Theta_1$, where $\Theta_0$ is a subspace of $\Theta_1$,
 and let $d$ be the difference between the $\Theta_1$ and $\Theta_0 $
 dimensions.
-It follows from classical likelihood theory that
+Give that the null hyphotesis is the true one,
+it follows from classical likelihood theory that
 \begin{equation*}
 	\til{\chi}^2_d \sim -2\ln
 	\Bigg(
